@@ -8,7 +8,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import screeninfo
 import threading
-sys.path.append(r"C:\Users\Mika Music\PycharmProjects\PAX1000-controller")
+sys.path.append(r"C:\Users\SSMAdmin\PycharmProjects\PAX1000-controller")
 from pax1000_controller import *
 import  faulthandler
 
@@ -77,7 +77,7 @@ class ImageDisplay(tk.Toplevel):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.image_display = ImageDisplay(0)
+        self.image_display = ImageDisplay(1)
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.__measuring_thread = MeasuringThread()
         self.__measuring_thread.start()
@@ -176,16 +176,16 @@ fig1.tight_layout()
 plt.show()
 
 if result[2].all() != 0:
-    s0 = 1
+    s0 = np.full(255, 1)
     s1 = result[3]/result[2]
     s2 = result[4]/result[2]
     s3 = result[5]/result[2]
 
     fig2, ax2 = plt.subplots()
-    plt.plot(ls, result[s0], label='S0')
-    plt.plot(ls, result[s1], label='S1')
-    plt.plot(ls, result[s2], label='S2')
-    plt.plot(ls, result[s3], label='S3')
+    plt.plot(ls, s0, label='S0')
+    plt.plot(ls, s1, label='S1')
+    plt.plot(ls, s2, label='S2')
+    plt.plot(ls, s3, label='S3')
     fig2.suptitle('normalized Stokes Parameter')
     fig2.supxlabel('grayscale value')
     fig2.supylabel('arb. value')
