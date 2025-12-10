@@ -8,7 +8,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import screeninfo
 import threading
-sys.path.append(r"C:\Users\SSMAdmin\PycharmProjects\PAX1000-controller")
+sys.path.append(r"C:\Users\Mika Music\PycharmProjects\PAX1000-controller")
 from pax1000_controller import *
 import  faulthandler
 
@@ -77,14 +77,14 @@ class ImageDisplay(tk.Toplevel):
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.image_display = ImageDisplay(1)
+        self.image_display = ImageDisplay(0)
         self.protocol("WM_DELETE_WINDOW", self.close)
         self.__measuring_thread = MeasuringThread()
         self.__measuring_thread.start()
         self.__rep_rate = 100
         time.sleep(1)
 
-        self.result = np.empty((15, 256))
+        self.result = np.empty((11, 256))
         self.counter_gs = 0
 
         while self._is_result_none():
@@ -111,15 +111,11 @@ class App(tk.Tk):
             self.result[3][self.counter_gs] = measurement["S1"]
             self.result[4][self.counter_gs] = measurement["S2"]
             self.result[5][self.counter_gs] = measurement["S3"]
-            self.result[6][self.counter_gs] = measurement["s0"]
-            self.result[7][self.counter_gs] = measurement["s1"]
-            self.result[8][self.counter_gs] = measurement["s2"]
-            self.result[9][self.counter_gs] = measurement["s3"]
-            self.result[10][self.counter_gs] = measurement["dop"]
-            self.result[11][self.counter_gs] = measurement["dolp"]
-            self.result[12][self.counter_gs] = measurement["docp"]
-            self.result[13][self.counter_gs] = measurement["power_pol"]
-            self.result[14][self.counter_gs] = measurement["power_upol"]
+            self.result[6][self.counter_gs] = measurement["dop"]
+            self.result[7][self.counter_gs] = measurement["dolp"]
+            self.result[8][self.counter_gs] = measurement["docp"]
+            self.result[9][self.counter_gs] = measurement["power_pol"]
+            self.result[10][self.counter_gs] = measurement["power_upol"]
 
             print(f'measurement {self.counter_gs+1}/256')
 
@@ -179,20 +175,26 @@ plt.legend()
 fig1.tight_layout()
 plt.show()
 
-fig2, ax2 = plt.subplots()
-plt.plot(ls, result[6], label='S0')
-plt.plot(ls, result[7], label='S1')
-plt.plot(ls, result[8], label='S2')
-plt.plot(ls, result[9], label='S3')
-fig2.suptitle('normalized Stokes Parameter')
-fig2.supxlabel('grayscale value')
-fig2.supylabel('arb. value')
-plt.legend()
-fig2.tight_layout()
-plt.show()
+if result[2].all() != 0:
+    s0 = 1
+    s1 = result[3]/result[2]
+    s2 = result[4]/result[2]
+    s3 = result[5]/result[2]
+
+    fig2, ax2 = plt.subplots()
+    plt.plot(ls, result[s0], label='S0')
+    plt.plot(ls, result[s1], label='S1')
+    plt.plot(ls, result[s2], label='S2')
+    plt.plot(ls, result[s3], label='S3')
+    fig2.suptitle('normalized Stokes Parameter')
+    fig2.supxlabel('grayscale value')
+    fig2.supylabel('arb. value')
+    plt.legend()
+    fig2.tight_layout()
+    plt.show()
 
 fig3, ax3 = plt.subplots()
-plt.plot(ls, result[10])
+plt.plot(ls, result[6])
 fig3.suptitle('Degree of Polarization (DOP)')
 fig3.supxlabel('grayscale value')
 fig3.supylabel('arb. value')
@@ -200,7 +202,7 @@ fig3.tight_layout()
 plt.show()
 
 fig4, ax4 = plt.subplots()
-plt.plot(ls, result[11])
+plt.plot(ls, result[7])
 fig4.suptitle('Degree of Linear Polarization (DOLP)')
 fig4.supxlabel('grayscale value')
 fig4.supylabel('arb. value')
@@ -208,7 +210,7 @@ fig4.tight_layout()
 plt.show()
 
 fig5, ax = plt.subplots()
-plt.plot(ls, result[12])
+plt.plot(ls, result[8])
 fig5.suptitle('Degree of Circular Polarization (DOCP)')
 fig5.supxlabel('grayscale value')
 fig5.supylabel('arb. value')
@@ -216,8 +218,8 @@ fig5.tight_layout()
 plt.show()
 
 fig6, ax6 = plt.subplots()
-plt.plot(ls, result[11], label='DOLP')
-plt.plot(ls, result[12], label='DOCP')
+plt.plot(ls, result[7], label='DOLP')
+plt.plot(ls, result[8], label='DOCP')
 fig6.suptitle('DOLP and DOCP')
 fig6.supxlabel('grayscale value')
 fig6.supylabel('arb. value')
@@ -225,28 +227,28 @@ plt.legend()
 fig6.tight_layout()
 plt.show()
 
-# fig7, ax7 = plt.subplots()
-# plt.plot(ls, result[13])
-# fig7.suptitle('Polarized Power')
-# fig7.supxlabel('grayscale value')
-# fig7.supylabel('P[W]')
-# fig7.tight_layout()
-# plt.show()
-#
-# fig8, ax8 = plt.subplots()
-# plt.plot(ls, result[14])
-# fig8.suptitle('Unpolarized Power')
-# fig8.supxlabel('grayscale value')
-# fig8.supylabel('P[W]')
-# fig8.tight_layout()
-# plt.show()
-#
-# fig9, ax9 = plt.subplots()
-# plt.plot(ls, result[13], label='P_pol')
-# plt.plot(ls, result[14], label='P_upol')
-# fig9.suptitle('Polarized Power und Unpolarized Power')
-# fig9.supxlabel('grayscale value')
-# fig9.supylabel('P[W]')
-# plt.legend()
-# fig9.tight_layout()
-# plt.show()
+fig7, ax7 = plt.subplots()
+plt.plot(ls, result[9])
+fig7.suptitle('Polarized Power')
+fig7.supxlabel('grayscale value')
+fig7.supylabel('P[W]')
+fig7.tight_layout()
+plt.show()
+
+fig8, ax8 = plt.subplots()
+plt.plot(ls, result[10])
+fig8.suptitle('Unpolarized Power')
+fig8.supxlabel('grayscale value')
+fig8.supylabel('P[W]')
+fig8.tight_layout()
+plt.show()
+
+fig9, ax9 = plt.subplots()
+plt.plot(ls, result[9], label='P_pol')
+plt.plot(ls, result[10], label='P_upol')
+fig9.suptitle('Polarized Power und Unpolarized Power')
+fig9.supxlabel('grayscale value')
+fig9.supylabel('P[W]')
+plt.legend()
+fig9.tight_layout()
+plt.show()
