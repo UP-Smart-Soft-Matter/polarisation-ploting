@@ -13,8 +13,8 @@ import os
 sys.path.append(r"C:\Users\SSMAdmin\PycharmProjects\PAX1000-controller")
 from pax1000_controller import *
 
-export_path = '.'
-appendix = ''
+export_path = r'E:\Experimente\PIP-IIP-Recreation'
+appendix = '_LL'
 
 result_dict_list = None
 
@@ -26,7 +26,7 @@ def create_folder(basepath):
     else:
         i = 1
         while os.path.exists(filepath):
-            filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement_{i}{appendix}")
+            filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement{appendix}_{i}")
             i += 1
         os.makedirs(filepath)
         return filepath
