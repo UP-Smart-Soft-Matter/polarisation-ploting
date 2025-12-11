@@ -1,3 +1,4 @@
+import datetime
 import sys
 import time
 from PIL.Image import fromarray
@@ -8,13 +9,26 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import screeninfo
 import threading
+import os
 sys.path.append(r"C:\Users\SSMAdmin\PycharmProjects\PAX1000-controller")
 from pax1000_controller import *
-import  faulthandler
 
-faulthandler.enable()
+export_path = '.'
 
 result_dict_list = None
+
+def create_folder(basepath):
+    filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement")
+    if not os.path.exists(filepath):
+        os.makedirs(filepath)
+        return filepath
+    else:
+        i = 1
+        while os.path.exists(filepath):
+            filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement_{i}")
+            i += 1
+        os.makedirs(filepath)
+        return filepath
 
 def init_pax():
     while True:
@@ -163,6 +177,9 @@ class MeasuringThread(threading.Thread):
 app = App()
 app.mainloop()
 
+filepath = create_folder(export_path)
+np.savetxt(os.path.join(filepath, 'data.csv'), result_dict_list.T, fmt='%f', delimiter=',', header='azimuth,ellipticity,S0,S1,S2,S3,dop,dolp,docp,power_pol,power_upol' )
+
 ls = np.linspace(0,256, 256)
 
 azimuth = []
@@ -176,18 +193,20 @@ fig3.suptitle('Azimuth')
 fig3.supxlabel('grayscale value')
 fig3.supylabel('angle[°]')
 fig3.tight_layout()
+plt.savefig(os.path.join(filepath, 'azimuth.png'))
 plt.show()
 
 fig1, ax1 = plt.subplots()
-plt.plot(ls, result_dict_list[2], label='S0')
-plt.plot(ls, result_dict_list[3], label='S1')
-plt.plot(ls, result_dict_list[4], label='S2')
-plt.plot(ls, result_dict_list[5], label='S3')
+plt.plot(ls, result_dict_list[2]/10**-3, label='S0')
+plt.plot(ls, result_dict_list[3]/10**-3, label='S1')
+plt.plot(ls, result_dict_list[4]/10**-3, label='S2')
+plt.plot(ls, result_dict_list[5]/10**-3, label='S3')
 fig1.suptitle('Stokes Parameter')
 fig1.supxlabel('grayscale value')
-fig1.supylabel('P[W]')
+fig1.supylabel('Intensity units')
 plt.legend()
 fig1.tight_layout()
+plt.savefig(os.path.join(filepath, 'stokes_parameter.png'))
 plt.show()
 
 if result_dict_list[2].all() != 0:
@@ -206,7 +225,10 @@ if result_dict_list[2].all() != 0:
     fig2.supylabel('arb. value')
     plt.legend()
     fig2.tight_layout()
+    plt.savefig(os.path.join(filepath, 'stokes_parameter_normalized.png'))
     plt.show()
+else:
+    print('S0 array contains zeros -> normalisation failed')
 
 fig3, ax3 = plt.subplots()
 plt.plot(ls, result_dict_list[6])
@@ -214,6 +236,7 @@ fig3.suptitle('Degree of Polarization (DOP)')
 fig3.supxlabel('grayscale value')
 fig3.supylabel('arb. value')
 fig3.tight_layout()
+plt.savefig(os.path.join(filepath, 'dop.png'))
 plt.show()
 
 fig4, ax4 = plt.subplots()
@@ -222,6 +245,7 @@ fig4.suptitle('Degree of Linear Polarization (DOLP)')
 fig4.supxlabel('grayscale value')
 fig4.supylabel('arb. value')
 fig4.tight_layout()
+plt.savefig(os.path.join(filepath, 'dolp.png'))
 plt.show()
 
 fig5, ax = plt.subplots()
@@ -230,6 +254,7 @@ fig5.suptitle('Degree of Circular Polarization (DOCP)')
 fig5.supxlabel('grayscale value')
 fig5.supylabel('arb. value')
 fig5.tight_layout()
+plt.savefig(os.path.join(filepath, 'docp.png'))
 plt.show()
 
 fig6, ax6 = plt.subplots()
@@ -240,30 +265,35 @@ fig6.supxlabel('grayscale value')
 fig6.supylabel('arb. value')
 plt.legend()
 fig6.tight_layout()
+plt.savefig(os.path.join(filepath, 'dolp_docp.png'))
 plt.show()
 
-fig7, ax7 = plt.subplots()
-plt.plot(ls, result_dict_list[9])
-fig7.suptitle('Polarized Power')
-fig7.supxlabel('grayscale value')
-fig7.supylabel('P[W]')
-fig7.tight_layout()
-plt.show()
+# fig7, ax7 = plt.subplots()
+# plt.plot(ls, result_dict_list[9]/10**-3)
+# fig7.suptitle('Polarized Power')
+# fig7.supxlabel('grayscale value')
+# fig7.supylabel('P[mW]')
+# fig7.tight_layout()
+# plt.savefig(os.path.join(filepath, 'p_pol.png'))
+# plt.show()
+#
+# fig8, ax8 = plt.subplots()
+# plt.plot(ls, result_dict_list[10]/10**-3)
+# fig8.suptitle('Unpolarized Power')
+# fig8.supxlabel('grayscale value')
+# fig8.supylabel('P[mW]')
+# fig8.tight_layout()
+# plt.savefig(os.path.join(filepath, 'p_upol.png'))
+# plt.show()
+#
+# fig9, ax9 = plt.subplots()
+# plt.plot(ls, result_dict_list[9]/10**-3, label='P_pol')
+# plt.plot(ls, result_dict_list[10]/10**-3, label='P_upol')
+# fig9.suptitle('Polarized Power und Unpolarized Power')
+# fig9.supxlabel('grayscale value')
+# fig9.supylabel('P[mW]')
+# plt.legend()
+# fig9.tight_layout()
+# plt.savefig(os.path.join(filepath, 'p_pol_p_upol.png'))
+# plt.show()
 
-fig8, ax8 = plt.subplots()
-plt.plot(ls, result_dict_list[10])
-fig8.suptitle('Unpolarized Power')
-fig8.supxlabel('grayscale value')
-fig8.supylabel('P[W]')
-fig8.tight_layout()
-plt.show()
-
-fig9, ax9 = plt.subplots()
-plt.plot(ls, result_dict_list[9], label='P_pol')
-plt.plot(ls, result_dict_list[10], label='P_upol')
-fig9.suptitle('Polarized Power und Unpolarized Power')
-fig9.supxlabel('grayscale value')
-fig9.supylabel('P[W]')
-plt.legend()
-fig9.tight_layout()
-plt.show()
