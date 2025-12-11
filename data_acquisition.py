@@ -191,7 +191,7 @@ fig1.tight_layout()
 plt.show()
 
 if result_dict_list[2].all() != 0:
-    s0 = np.full(255, 1)
+    s0 = np.full(256, 1)
     s1 = result_dict_list[3]/result_dict_list[2]
     s2 = result_dict_list[4]/result_dict_list[2]
     s3 = result_dict_list[5]/result_dict_list[2]
