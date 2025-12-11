@@ -14,18 +14,19 @@ sys.path.append(r"C:\Users\SSMAdmin\PycharmProjects\PAX1000-controller")
 from pax1000_controller import *
 
 export_path = '.'
+appendix = ''
 
 result_dict_list = None
 
 def create_folder(basepath):
-    filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement")
+    filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement{appendix}")
     if not os.path.exists(filepath):
         os.makedirs(filepath)
         return filepath
     else:
         i = 1
         while os.path.exists(filepath):
-            filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement_{i}")
+            filepath = os.path.join(basepath, f"{datetime.date.today()}_polarization_measurement_{i}{appendix}")
             i += 1
         os.makedirs(filepath)
         return filepath
@@ -176,7 +177,7 @@ app = App()
 app.mainloop()
 
 filepath = create_folder(export_path)
-np.savetxt(os.path.join(filepath, 'data.csv'), result_dict_list.T, fmt='%f', delimiter=',', header='azimuth,ellipticity,S0,S1,S2,S3,dop,dolp,docp' )
+np.savetxt(os.path.join(filepath, f'data{appendix}.csv'), result_dict_list.T, fmt='%f', delimiter=',', header='azimuth,ellipticity,S0,S1,S2,S3,dop,dolp,docp' )
 
 ls = np.linspace(0,256, 256)
 
@@ -191,7 +192,7 @@ fig3.suptitle('Azimuth')
 fig3.supxlabel('grayscale value')
 fig3.supylabel('angle[°]')
 fig3.tight_layout()
-plt.savefig(os.path.join(filepath, 'azimuth.png'))
+plt.savefig(os.path.join(filepath, f'azimuth{appendix}.png'))
 plt.show()
 
 fig1, ax1 = plt.subplots()
@@ -204,7 +205,7 @@ fig1.supxlabel('grayscale value')
 fig1.supylabel('Intensity units')
 plt.legend()
 fig1.tight_layout()
-plt.savefig(os.path.join(filepath, 'stokes_parameter.png'))
+plt.savefig(os.path.join(filepath, f'stokes_parameter{appendix}.png'))
 plt.show()
 
 if result_dict_list[2].all() != 0:
@@ -223,7 +224,7 @@ if result_dict_list[2].all() != 0:
     fig2.supylabel('arb. value')
     plt.legend()
     fig2.tight_layout()
-    plt.savefig(os.path.join(filepath, 'stokes_parameter_normalized.png'))
+    plt.savefig(os.path.join(filepath, f'stokes_parameter_normalized{appendix}.png'))
     plt.show()
 else:
     print('S0 array contains zeros -> normalisation failed')
@@ -234,7 +235,7 @@ fig3.suptitle('Degree of Polarization (DOP)')
 fig3.supxlabel('grayscale value')
 fig3.supylabel('arb. value')
 fig3.tight_layout()
-plt.savefig(os.path.join(filepath, 'dop.png'))
+plt.savefig(os.path.join(filepath, f'dop{appendix}.png'))
 plt.show()
 
 fig4, ax4 = plt.subplots()
@@ -243,7 +244,7 @@ fig4.suptitle('Degree of Linear Polarization (DOLP)')
 fig4.supxlabel('grayscale value')
 fig4.supylabel('arb. value')
 fig4.tight_layout()
-plt.savefig(os.path.join(filepath, 'dolp.png'))
+plt.savefig(os.path.join(filepath, f'dolp{appendix}.png'))
 plt.show()
 
 fig5, ax = plt.subplots()
@@ -252,7 +253,7 @@ fig5.suptitle('Degree of Circular Polarization (DOCP)')
 fig5.supxlabel('grayscale value')
 fig5.supylabel('arb. value')
 fig5.tight_layout()
-plt.savefig(os.path.join(filepath, 'docp.png'))
+plt.savefig(os.path.join(filepath, f'docp{appendix}.png'))
 plt.show()
 
 fig6, ax6 = plt.subplots()
@@ -263,5 +264,5 @@ fig6.supxlabel('grayscale value')
 fig6.supylabel('arb. value')
 plt.legend()
 fig6.tight_layout()
-plt.savefig(os.path.join(filepath, 'dolp_docp.png'))
+plt.savefig(os.path.join(filepath, f'dolp_docp{appendix}.png'))
 plt.show()
