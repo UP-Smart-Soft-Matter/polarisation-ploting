@@ -98,7 +98,7 @@ class App(tk.Tk):
         self.__rep_rate = 100
         time.sleep(1)
 
-        self.result = np.empty((11, 256))
+        self.result = np.empty((9, 256))
         self.counter_gs = 0
 
         print('PAX1000 starting up')
@@ -130,8 +130,6 @@ class App(tk.Tk):
             self.result[6][self.counter_gs] = measurement["dop"]
             self.result[7][self.counter_gs] = measurement["dolp"]
             self.result[8][self.counter_gs] = measurement["docp"]
-            self.result[9][self.counter_gs] = measurement["power_pol"]
-            self.result[10][self.counter_gs] = measurement["power_upol"]
 
             print(f'measurement {self.counter_gs+1}/256')
 
@@ -178,7 +176,7 @@ app = App()
 app.mainloop()
 
 filepath = create_folder(export_path)
-np.savetxt(os.path.join(filepath, 'data.csv'), result_dict_list.T, fmt='%f', delimiter=',', header='azimuth,ellipticity,S0,S1,S2,S3,dop,dolp,docp,power_pol,power_upol' )
+np.savetxt(os.path.join(filepath, 'data.csv'), result_dict_list.T, fmt='%f', delimiter=',', header='azimuth,ellipticity,S0,S1,S2,S3,dop,dolp,docp' )
 
 ls = np.linspace(0,256, 256)
 
@@ -267,33 +265,3 @@ plt.legend()
 fig6.tight_layout()
 plt.savefig(os.path.join(filepath, 'dolp_docp.png'))
 plt.show()
-
-# fig7, ax7 = plt.subplots()
-# plt.plot(ls, result_dict_list[9]/10**-3)
-# fig7.suptitle('Polarized Power')
-# fig7.supxlabel('grayscale value')
-# fig7.supylabel('P[mW]')
-# fig7.tight_layout()
-# plt.savefig(os.path.join(filepath, 'p_pol.png'))
-# plt.show()
-#
-# fig8, ax8 = plt.subplots()
-# plt.plot(ls, result_dict_list[10]/10**-3)
-# fig8.suptitle('Unpolarized Power')
-# fig8.supxlabel('grayscale value')
-# fig8.supylabel('P[mW]')
-# fig8.tight_layout()
-# plt.savefig(os.path.join(filepath, 'p_upol.png'))
-# plt.show()
-#
-# fig9, ax9 = plt.subplots()
-# plt.plot(ls, result_dict_list[9]/10**-3, label='P_pol')
-# plt.plot(ls, result_dict_list[10]/10**-3, label='P_upol')
-# fig9.suptitle('Polarized Power und Unpolarized Power')
-# fig9.supxlabel('grayscale value')
-# fig9.supylabel('P[mW]')
-# plt.legend()
-# fig9.tight_layout()
-# plt.savefig(os.path.join(filepath, 'p_pol_p_upol.png'))
-# plt.show()
-
