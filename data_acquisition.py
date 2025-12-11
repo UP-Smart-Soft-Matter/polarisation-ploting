@@ -165,6 +165,19 @@ app.mainloop()
 
 ls = np.linspace(0,256, 256)
 
+azimuth = []
+for i, datapoint in enumerate(result_dict_list[0]):
+    datapoint = (datapoint - 90) * (- 1)
+    azimuth.append(datapoint)
+
+fig3, ax3 = plt.subplots()
+plt.plot(ls, azimuth)
+fig3.suptitle('Azimuth')
+fig3.supxlabel('grayscale value')
+fig3.supylabel('angle[°]')
+fig3.tight_layout()
+plt.show()
+
 fig1, ax1 = plt.subplots()
 plt.plot(ls, result_dict_list[2], label='S0')
 plt.plot(ls, result_dict_list[3], label='S1')
