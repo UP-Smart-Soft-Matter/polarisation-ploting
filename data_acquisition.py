@@ -14,7 +14,7 @@ import  faulthandler
 
 faulthandler.enable()
 
-result = None
+result_dict_list = None
 
 def init_pax():
     while True:
@@ -87,8 +87,10 @@ class App(tk.Tk):
         self.result = np.empty((11, 256))
         self.counter_gs = 0
 
+        print('PAX1000 starting up')
         while self._is_result_none():
-            print('PAX1000 starting up')
+            pass
+        print('PAX1000 start up finished')
 
         self.get_data(self.__rep_rate)
 
@@ -122,8 +124,8 @@ class App(tk.Tk):
             self.counter_gs += 1
             self.after(rep_rate, self.get_data, self.__rep_rate)
         else:
-            global result
-            result = self.result.copy()
+            global result_dict_list
+            result_dict_list = self.result.copy()
             self.close()
 
     def _is_result_none(self):
@@ -164,10 +166,10 @@ app.mainloop()
 ls = np.linspace(0,256, 256)
 
 fig1, ax1 = plt.subplots()
-plt.plot(ls, result[2], label='S0')
-plt.plot(ls, result[3], label='S1')
-plt.plot(ls, result[4], label='S2')
-plt.plot(ls, result[5], label='S3')
+plt.plot(ls, result_dict_list[2], label='S0')
+plt.plot(ls, result_dict_list[3], label='S1')
+plt.plot(ls, result_dict_list[4], label='S2')
+plt.plot(ls, result_dict_list[5], label='S3')
 fig1.suptitle('Stokes Parameter')
 fig1.supxlabel('grayscale value')
 fig1.supylabel('P[W]')
@@ -175,11 +177,11 @@ plt.legend()
 fig1.tight_layout()
 plt.show()
 
-if result[2].all() != 0:
+if result_dict_list[2].all() != 0:
     s0 = np.full(255, 1)
-    s1 = result[3]/result[2]
-    s2 = result[4]/result[2]
-    s3 = result[5]/result[2]
+    s1 = result_dict_list[3]/result_dict_list[2]
+    s2 = result_dict_list[4]/result_dict_list[2]
+    s3 = result_dict_list[5]/result_dict_list[2]
 
     fig2, ax2 = plt.subplots()
     plt.plot(ls, s0, label='S0')
@@ -194,7 +196,7 @@ if result[2].all() != 0:
     plt.show()
 
 fig3, ax3 = plt.subplots()
-plt.plot(ls, result[6])
+plt.plot(ls, result_dict_list[6])
 fig3.suptitle('Degree of Polarization (DOP)')
 fig3.supxlabel('grayscale value')
 fig3.supylabel('arb. value')
@@ -202,7 +204,7 @@ fig3.tight_layout()
 plt.show()
 
 fig4, ax4 = plt.subplots()
-plt.plot(ls, result[7])
+plt.plot(ls, result_dict_list[7])
 fig4.suptitle('Degree of Linear Polarization (DOLP)')
 fig4.supxlabel('grayscale value')
 fig4.supylabel('arb. value')
@@ -210,7 +212,7 @@ fig4.tight_layout()
 plt.show()
 
 fig5, ax = plt.subplots()
-plt.plot(ls, result[8])
+plt.plot(ls, result_dict_list[8])
 fig5.suptitle('Degree of Circular Polarization (DOCP)')
 fig5.supxlabel('grayscale value')
 fig5.supylabel('arb. value')
@@ -218,8 +220,8 @@ fig5.tight_layout()
 plt.show()
 
 fig6, ax6 = plt.subplots()
-plt.plot(ls, result[7], label='DOLP')
-plt.plot(ls, result[8], label='DOCP')
+plt.plot(ls, result_dict_list[7], label='DOLP')
+plt.plot(ls, result_dict_list[8], label='DOCP')
 fig6.suptitle('DOLP and DOCP')
 fig6.supxlabel('grayscale value')
 fig6.supylabel('arb. value')
@@ -228,7 +230,7 @@ fig6.tight_layout()
 plt.show()
 
 fig7, ax7 = plt.subplots()
-plt.plot(ls, result[9])
+plt.plot(ls, result_dict_list[9])
 fig7.suptitle('Polarized Power')
 fig7.supxlabel('grayscale value')
 fig7.supylabel('P[W]')
@@ -236,7 +238,7 @@ fig7.tight_layout()
 plt.show()
 
 fig8, ax8 = plt.subplots()
-plt.plot(ls, result[10])
+plt.plot(ls, result_dict_list[10])
 fig8.suptitle('Unpolarized Power')
 fig8.supxlabel('grayscale value')
 fig8.supylabel('P[W]')
@@ -244,8 +246,8 @@ fig8.tight_layout()
 plt.show()
 
 fig9, ax9 = plt.subplots()
-plt.plot(ls, result[9], label='P_pol')
-plt.plot(ls, result[10], label='P_upol')
+plt.plot(ls, result_dict_list[9], label='P_pol')
+plt.plot(ls, result_dict_list[10], label='P_upol')
 fig9.suptitle('Polarized Power und Unpolarized Power')
 fig9.supxlabel('grayscale value')
 fig9.supylabel('P[W]')
