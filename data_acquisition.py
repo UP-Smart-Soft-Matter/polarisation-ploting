@@ -1,6 +1,4 @@
 import datetime
-import sys
-import time
 from PIL.Image import fromarray
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,11 +8,10 @@ from tkinter import messagebox
 import screeninfo
 import threading
 import os
-sys.path.append(r"C:\Users\SSMAdmin\PycharmProjects\PAX1000-controller")
 from pax1000_controller import *
 
 export_path = r'E:\Experimente\PIP-IIP-Recreation'
-appendix = '_LL'
+appendix = '_RL'
 
 result_dict_list = None
 
